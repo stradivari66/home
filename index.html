@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stradivari - Мастерская музыкальных инструментов</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a0f0a 0%, #2d1810 50%, #1a0f0a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Cormorant Garamond', serif;
+            color: #d4b896;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Виньетка по бокам */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 30%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::before {
+            left: 0;
+            background: linear-gradient(to right, 
+                rgba(0, 0, 0, 0.8) 0%,
+                rgba(0, 0, 0, 0.4) 40%,
+                transparent 100%
+            );
+        }
+
+        body::after {
+            right: 0;
+            background: linear-gradient(to left, 
+                rgba(0, 0, 0, 0.8) 0%,
+                rgba(0, 0, 0, 0.4) 40%,
+                transparent 100%
+            );
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            font-weight: 700;
+            color: #e8d4b8;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.15em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 .large-s {
+            font-size: 1.3em;
+            color: #f0e0c8;
+        }
+
+        .subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #c4a67a;
+            margin-bottom: 4rem;
+            line-height: 1.8;
+            letter-spacing: 0.15em;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .divider {
+            width: 150px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #8b6f47, transparent);
+            margin: 3rem auto;
+        }
+
+        .services {
+            text-align: left;
+            margin: 0 auto 4rem;
+            max-width: 700px;
+            font-size: 1.25rem;
+            line-height: 2;
+            color: #b89968;
+        }
+
+        .services p {
+            margin-bottom: 1.5rem;
+        }
+
+        .services strong {
+            color: #d4b896;
+            font-weight: 400;
+        }
+
+        .highlight-service {
+            color: #e8a850;
+        }
+
+        .contact {
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(139, 111, 71, 0.3);
+        }
+
+        .contact-info {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: #e8d4b8;
+            letter-spacing: 0.03em;
+        }
+
+        .contact-name {
+            font-size: 1.1rem;
+            color: #a88850;
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        a {
+            color: #e8d4b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            body::before,
+            body::after {
+                width: 20%;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .services {
+                font-size: 1rem;
+            }
+
+            .contact-info {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="large-s">S</span>TRADIVARI</h1>
+        
+        <div class="subtitle">
+            Мастерская по ремонту и реставрации музыкальных инструментов
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="services">
+            <p><strong>Профессиональный ремонт, реставрация, настройка:</strong></p>
+            
+            <p>— гитар, домр, балалаек, мандолин (сложные столярные работы, замена ладов...)</p>
+            
+            <p>— скрипок, альтов, виолончелей...</p>
+            
+            <p>— национальных струнно-смычковых и щипковых инструментов</p>
+            
+            <p class="highlight-service">— замена волоса в смычках</p>
+
+            <p>— решение нестандартных ремонтных задач приветствуется</p>
+            
+            <p style="margin-top: 2rem;">У нас Вы сможете получить квалифицированную консультацию, а также привести в порядок своего лучшего "друга" или "подругу". </p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="contact">
+            <div class="contact-info">
+                <a href="tel:+79120319010">+7 912 031-90-10</a>
+            </div>
+            <div class="contact-name">Виктор</div>
+        </div>
+    </div>
+</body>
+</html>
