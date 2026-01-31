@@ -184,6 +184,31 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
+        .gallery-grid img {
+            height: 200px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 3rem;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(232, 212, 184, 0.3);
+        }
+
         @media (max-width: 768px) {
             body::before,
             body::after {
@@ -215,7 +240,13 @@
                 letter-spacing: 0.1em;
                 padding: 20px;
             }
+
+            .gallery-grid {
+                grid-template-columns: repeat(1, 1fr);
+                gap: 15px;
+            }
         }
+ 
     </style>
 </head>
 <body>
@@ -241,7 +272,16 @@
     <div class="container">
         <h1>ГАЛЕРЕЯ</h1>
         
-        <!-- Здесь будет контент галереи -->
+        <div class="gallery-grid">
+    <img src="images/photo1.webp" alt="Работа (1)">
+    <img src="images/photo2.webp" alt="Работа (2)">
+    <img src="images/photo3.webp" alt="Работа (3)">
+    <img src="images/photo4.webp" alt="Работа (4)">
+    <img src="images/photo5.webp" alt="Работа (5)">
+    <img src="images/photo6.webp" alt="Работа (6)">
+    <img src="images/photo7.webp" alt="Работа (7)">
+    <img src="images/photo8.webp" alt="Работа (8)">
+</div>
         
     </div>
 
