@@ -209,6 +209,38 @@
             box-shadow: 0 8px 24px rgba(232, 212, 184, 0.3);
         }
 
+        .vk-section {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .vk-text {
+            font-size: 1.4rem;
+            color: #c4a67a;
+            margin-bottom: 25px;
+            letter-spacing: 0.05em;
+        }
+
+        .vk-button {
+            display: inline-block;
+            padding: 15px 45px;
+            background: rgba(0, 119, 255, 0.15);
+            border: 2px solid #0077FF;
+            border-radius: 8px;
+            color: #0077FF;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .vk-button:hover {
+            background: rgba(0, 119, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 119, 255, 0.3);
+        }
+
         @media (max-width: 768px) {
             body::before,
             body::after {
@@ -244,6 +276,19 @@
             .gallery-grid {
                 grid-template-columns: repeat(1, 1fr);
                 gap: 15px;
+            }
+
+            .vk-section {
+                margin-top: 40px;
+            }
+
+            .vk-text {
+                font-size: 1.2rem;
+            }
+
+            .vk-button {
+                padding: 12px 35px;
+                font-size: 1.1rem;
             }
         }
  
@@ -282,6 +327,13 @@
     <img src="images/photo7.webp" alt="Работа (7)">
     <img src="images/photo8.webp" alt="Работа (8)">
 </div>
+        
+        <div style="width: 150px; height: 1px; background: linear-gradient(to right, transparent, #8b6f47, transparent); margin: 3rem auto;"></div>
+        
+        <div class="vk-section">
+            <p class="vk-text">Больше информации по ссылке в VK</p>
+            <a href="https://vk.com/stradivarigus17" target="_blank" class="vk-button">Перейти в VK</a>
+        </div>
         
     </div>
 
