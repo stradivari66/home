@@ -1,0 +1,1377 @@
+/* Общие стили сайта Stradivari — «Строгий тёмный» */
+
+:root {
+    --bg: #14110f;
+    --alt-bg: #1a1613;
+    --card-bg: #1f1a16;
+    --header-bg: rgba(20, 17, 15, 0.96);
+    --footer-bg: #0f0d0b;
+
+    --text: #ddd3c4;
+    --heading: #f2ebdf;
+    --muted: #a39581;
+
+    --accent: #c9a25e;
+    --accent-hover: #d9b574;
+    --on-accent: #17120d;
+
+    --line: #2c2620;
+    --line-strong: #4a3f33;
+
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-heading: 'Playfair Display', Georgia, serif;
+
+    --radius: 4px;
+    --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+
+    /* Плавная «дорогая» кривая для всех анимаций */
+    --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Быстрые касания на телефоне не принимаются за «двойной тап — увеличить»:
+   кнопки и ссылки реагируют на каждое нажатие сразу */
+a,
+button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* При переходе по якорю шапка не закрывает начало блока */
+[id] {
+    scroll-margin-top: 80px;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.65;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    color: var(--heading);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    margin-bottom: 22px;
+}
+
+h2 {
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    margin-bottom: 8px;
+}
+
+/* ===== Шапка ===== */
+
+.site-header {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    min-height: 76px;
+}
+
+.logo {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.45rem;
+    letter-spacing: 0.14em;
+    color: var(--heading);
+    line-height: 1.1;
+}
+
+.logo span {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+
+.nav {
+    display: flex;
+    gap: 28px;
+    margin-left: auto;
+    font-size: 0.95rem;
+}
+
+.nav > a {
+    position: relative;
+    color: var(--muted);
+    padding: 6px 0;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+/* Подчёркивание плавно вырастает из центра */
+.nav > a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.35s var(--ease);
+}
+
+.nav > a:hover {
+    color: var(--heading);
+}
+
+.nav > a:hover::after {
+    transform: scaleX(0.6);
+}
+
+.nav > a.active {
+    color: var(--heading);
+}
+
+.nav > a.active::after {
+    transform: scaleX(1);
+}
+
+.header-phone {
+    font-weight: 600;
+    color: var(--heading);
+    white-space: nowrap;
+}
+
+.header-phone:hover {
+    color: var(--accent);
+}
+
+/* Кнопка меню — видна только на телефонах */
+.menu-toggle {
+    display: none;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    cursor: pointer;
+    /* Быстрые нажатия подряд не выделяют текст на странице */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.menu-toggle span {
+    width: 20px;
+    height: 2px;
+    background: var(--heading);
+    transition: transform 0.25s, opacity 0.25s;
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ===== Первый экран главной ===== */
+
+.hero {
+    padding: 80px 0;
+    background: var(--alt-bg);
+    border-bottom: 1px solid var(--line);
+}
+
+.hero-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items: center;
+}
+
+.eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+.lead {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 34px;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: var(--on-accent);
+    border: 1px solid var(--accent);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+.btn-secondary {
+    border: 1px solid var(--line-strong);
+    color: var(--heading);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent);
+}
+
+.hero-image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center 75%;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+/* ===== Заголовок внутренних страниц ===== */
+
+.page-header {
+    padding: 64px 0 48px;
+    background: var(--alt-bg);
+    border-bottom: 1px solid var(--line);
+}
+
+.page-header h1 {
+    margin-bottom: 8px;
+}
+
+.page-header .lead {
+    margin-bottom: 0;
+}
+
+/* ===== Секции ===== */
+
+.section {
+    padding: 88px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.section-alt {
+    background: var(--alt-bg);
+}
+
+.section-lead {
+    color: var(--muted);
+    margin-bottom: 40px;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+}
+
+.card .num {
+    display: block;
+    font-family: var(--font-heading);
+    color: var(--accent);
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+    letter-spacing: 0.1em;
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.card p {
+    color: var(--muted);
+    font-size: 0.97rem;
+}
+
+.card-accent {
+    border-color: var(--accent);
+}
+
+.works-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.works-grid a {
+    display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.works-grid img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.works-grid a:hover img {
+    transform: scale(1.04);
+}
+
+.more {
+    display: inline-block;
+    margin-top: 28px;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.more:hover {
+    color: var(--accent-hover);
+}
+
+/* ===== Контакты ===== */
+
+.contacts-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+}
+
+.contact-list {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px 32px;
+    font-size: 1.1rem;
+}
+
+.contact-list dt {
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-top: 3px;
+}
+
+.contact-list dd {
+    color: var(--heading);
+}
+
+.contact-list a:hover {
+    color: var(--accent);
+}
+
+/* ===== Страница «О мастере» ===== */
+
+.about-text {
+    max-width: 720px;
+    font-size: 1.1rem;
+}
+
+.about-text p + p {
+    margin-top: 1.2em;
+}
+
+/* ===== Галерея ===== */
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.gallery-item {
+    display: block;
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: zoom-in;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.04);
+}
+
+.gallery-more {
+    margin-top: 48px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    color: var(--muted);
+}
+
+/* Просмотр фото на весь экран */
+.lightbox {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    background: rgba(12, 10, 8, 0.97);
+    color: var(--text);
+    font-family: var(--font-body);
+}
+
+.lightbox[open] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.lightbox-figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 70px 80px 30px;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.lightbox-img {
+    max-width: 100%;
+    max-height: calc(100vh - 170px);
+    max-height: calc(100dvh - 170px);
+    object-fit: contain;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.lightbox-caption {
+    font-size: 1.05rem;
+    color: var(--heading);
+    text-align: center;
+}
+
+.lightbox-counter {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.lightbox-btn {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: var(--card-bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    color: var(--heading);
+    font-size: 1.7rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.lightbox-btn:hover {
+    border-color: var(--accent);
+}
+
+.lightbox-close {
+    top: 20px;
+    right: 24px;
+}
+
+.lightbox-prev,
+.lightbox-next {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.lightbox-prev {
+    left: 20px;
+}
+
+.lightbox-next {
+    right: 20px;
+}
+
+/* ===== Подвал ===== */
+
+.site-footer {
+    padding: 28px 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: var(--footer-bg);
+}
+
+.footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+}
+
+.footer-credit {
+    color: var(--text);
+    border-bottom: 1px solid var(--line-strong);
+    transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.footer-credit:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+@media (max-width: 640px) {
+    .footer-inner {
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+}
+
+/* ===== Адаптив ===== */
+
+@media (max-width: 900px) {
+    .header-inner {
+        flex-wrap: wrap;
+        gap: 10px 24px;
+        padding: 14px 24px;
+    }
+
+    .nav {
+        order: 3;
+        width: 100%;
+        margin-left: 0;
+        gap: 20px;
+        overflow-x: auto;
+    }
+
+    .header-phone {
+        margin-left: auto;
+    }
+
+    .hero {
+        padding: 48px 0;
+    }
+
+    .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .hero-image img {
+        aspect-ratio: 4 / 3;
+    }
+
+    .service-grid,
+    .works-grid,
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contacts-inner {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .section {
+        padding: 60px 0;
+    }
+
+    .page-header {
+        padding: 44px 0 36px;
+    }
+
+    .lightbox-figure {
+        padding: 80px 16px 90px;
+    }
+
+    .lightbox-img {
+        max-height: calc(100vh - 220px);
+        max-height: calc(100dvh - 220px);
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        top: auto;
+        bottom: 25px;
+        transform: none;
+    }
+
+    .lightbox-prev {
+        left: calc(50% - 60px);
+    }
+
+    .lightbox-next {
+        right: calc(50% - 60px);
+    }
+}
+
+/* ===== Телефоны ===== */
+
+@media (max-width: 640px) {
+    body {
+        font-size: 16px;
+    }
+
+    .wrap {
+        padding: 0 16px;
+    }
+
+    /* Шапка: логотип по центру, меню прячется в кнопку */
+    .header-inner {
+        position: relative;
+        justify-content: center;
+        min-height: 60px;
+        padding: 10px 64px;
+    }
+
+    .logo {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+    .logo span,
+    .header-phone {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    /* Само меню — в разделе «Мобильное меню» в конце файла */
+
+    /* Всё по центру */
+    .hero-text,
+    .page-header,
+    .section,
+    .site-footer {
+        text-align: center;
+    }
+
+    .hero {
+        padding: 36px 0 40px;
+    }
+
+    .hero-inner {
+        gap: 28px;
+    }
+
+    .eyebrow {
+        display: none;
+    }
+
+    h1 {
+        font-size: 1.85rem;
+        margin-bottom: 14px;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    .lead {
+        font-size: 1.05rem;
+        margin: 0 auto 26px;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 15px 20px;
+    }
+
+    .hero-image img {
+        aspect-ratio: 1;
+        object-position: center;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .section {
+        padding: 44px 0;
+    }
+
+    .section-lead {
+        margin-bottom: 24px;
+    }
+
+    /* Услуги: компактная сетка без пояснений */
+    .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .card {
+        padding: 18px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .card .num {
+        margin-bottom: 8px;
+    }
+
+    .card h3 {
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+    .card p {
+        display: none;
+    }
+
+    .works-grid,
+    .gallery-grid {
+        gap: 8px;
+    }
+
+    .more {
+        margin-top: 20px;
+    }
+
+    /* Внутренние страницы */
+    .page-header {
+        padding: 32px 0 28px;
+    }
+
+    .gallery-hint {
+        display: none;
+    }
+
+    .about-text {
+        margin: 0 auto;
+    }
+
+    .gallery-more {
+        flex-direction: column;
+        margin-top: 32px;
+    }
+
+    /* Контакты */
+    .contacts-inner {
+        gap: 0;
+    }
+
+    .contact-list {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .contact-list dd {
+        margin-bottom: 14px;
+        font-size: 1.15rem;
+    }
+
+    .site-footer {
+        padding: 22px 0;
+        font-size: 0.8rem;
+    }
+}
+
+/* ===================================================== */
+/* ===== Анимации и декоративные детали ===== */
+/* ===================================================== */
+
+/* Тёплое свечение на первом экране и в заголовках страниц */
+.hero,
+.page-header {
+    background:
+        radial-gradient(ellipse 60% 70% at 85% 15%, rgba(201, 162, 94, 0.10), transparent 70%),
+        radial-gradient(ellipse 50% 60% at 0% 100%, rgba(201, 162, 94, 0.05), transparent 70%),
+        var(--alt-bg);
+}
+
+/* Шапка: при прокрутке становится компактнее и получает тень */
+.site-header {
+    transition: box-shadow 0.4s var(--ease), background 0.4s var(--ease);
+}
+
+.header-inner {
+    transition: min-height 0.4s var(--ease);
+}
+
+.site-header.scrolled {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.site-header.scrolled .header-inner {
+    min-height: 62px;
+}
+
+/* Первый экран: элементы появляются по очереди при загрузке */
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes settle {
+    from {
+        opacity: 0;
+        transform: scale(1.06);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.hero-text > *,
+.page-header .wrap > * {
+    animation: rise 0.9s var(--ease) both;
+}
+
+.hero-text > :nth-child(2),
+.page-header .wrap > :nth-child(2) {
+    animation-delay: 0.12s;
+}
+
+.hero-text > :nth-child(3) {
+    animation-delay: 0.24s;
+}
+
+.hero-text > :nth-child(4) {
+    animation-delay: 0.36s;
+}
+
+.hero-image {
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    animation: rise 1s var(--ease) 0.2s both;
+}
+
+.hero-image img {
+    box-shadow: none;
+    animation: settle 1.6s var(--ease) 0.2s both;
+}
+
+/* Золотая линия под заголовками секций */
+.section h2::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 2px;
+    margin-top: 14px;
+    background: linear-gradient(to right, var(--accent), transparent);
+    transform-origin: left;
+    transition: transform 0.9s var(--ease) 0.3s;
+}
+
+.js .section h2.reveal::after {
+    transform: scaleX(0);
+}
+
+.js .section h2.reveal.visible::after {
+    transform: scaleX(1);
+}
+
+/* Появление при прокрутке (включается скриптом, без него всё видно сразу) */
+.js .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.js .reveal.visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Кнопки */
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 10px 24px rgba(201, 162, 94, 0.25);
+}
+
+/* Блик, пробегающий по золотой кнопке */
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.7s var(--ease);
+}
+
+.btn-primary:hover::before {
+    left: 125%;
+}
+
+/* Карточки услуг */
+.card {
+    transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease), background 0.4s var(--ease), opacity 0.8s var(--ease);
+}
+
+/* После появления карточка снова плавно реагирует на наведение */
+.js .card.reveal.visible {
+    transition: opacity 0.8s var(--ease), transform 0.6s var(--ease), border-color 0.4s var(--ease), background 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+.card:hover,
+.js .card.reveal.visible:hover {
+    transform: translateY(-5px);
+    border-color: rgba(201, 162, 94, 0.6);
+    background: #231d18;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.4);
+}
+
+/* У номера карточки при наведении вырастает золотая черта */
+.card .num::after {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    width: 0;
+    height: 1px;
+    margin-left: 10px;
+    background: var(--accent);
+    transition: width 0.5s var(--ease);
+}
+
+.card:hover .num::after {
+    width: 28px;
+}
+
+/* Фото: затемнение и значок лупы при наведении */
+.works-grid a,
+.gallery-item {
+    position: relative;
+}
+
+.works-grid a::after,
+.gallery-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='23' fill='rgba(20,17,15,0.55)' stroke='%23c9a25e' stroke-width='1.5'/%3E%3Ccircle cx='22' cy='22' r='7' fill='none' stroke='%23f2ebdf' stroke-width='2'/%3E%3Cpath d='M27 27l6 6' stroke='%23f2ebdf' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center / 48px no-repeat,
+        linear-gradient(to top, rgba(10, 8, 6, 0.55), rgba(10, 8, 6, 0.1));
+    opacity: 0;
+    transition: opacity 0.4s var(--ease);
+    pointer-events: none;
+}
+
+.works-grid a:hover::after,
+.gallery-item:hover::after,
+.gallery-item:focus-visible::after {
+    opacity: 1;
+}
+
+.works-grid img,
+.gallery-item img {
+    transition: transform 0.7s var(--ease);
+}
+
+.works-grid a:hover img,
+.gallery-item:hover img {
+    transform: scale(1.06);
+}
+
+.more {
+    transition: color 0.3s var(--ease), letter-spacing 0.3s var(--ease);
+}
+
+.more:hover {
+    letter-spacing: 0.03em;
+}
+
+.contact-list a {
+    transition: color 0.3s var(--ease);
+}
+
+/* Просмотр фото: плавное открытие и смена фото */
+@keyframes lightbox-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.lightbox[open] {
+    animation: lightbox-in 0.35s var(--ease);
+}
+
+.lightbox-img {
+    opacity: 0;
+    transform: scale(0.97);
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.lightbox-img.loaded {
+    opacity: 1;
+    transform: none;
+}
+
+.lightbox-btn {
+    transition: border-color 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+.lightbox-btn:hover {
+    background: var(--accent);
+    color: var(--on-accent);
+}
+
+/* Плавающая кнопка звонка — только на телефонах */
+.call-fab {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .section h2::after {
+        margin-left: auto;
+        margin-right: auto;
+        transform-origin: center;
+        background: linear-gradient(to right, transparent, var(--accent), transparent);
+        width: 64px;
+    }
+
+    .call-fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 20;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--on-accent);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px) scale(0.8);
+        transition: opacity 0.4s var(--ease), transform 0.4s var(--ease), visibility 0.4s;
+    }
+
+    .call-fab.show {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+
+    .call-fab svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    /* Мягкая пульсация, чтобы кнопку заметили */
+    .call-fab.show::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        animation: pulse 2.4s var(--ease) infinite;
+    }
+
+    @keyframes pulse {
+        from {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        to {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+    }
+
+    .site-footer {
+        padding-bottom: 88px;
+    }
+
+    /* ----- Анимация мобильного меню ----- */
+
+    /* Кнопка: «вдавливается» при нажатии, рамка золотеет при открытии */
+    .menu-toggle {
+        transition: border-color 0.35s var(--ease), background 0.35s var(--ease), transform 0.15s ease;
+    }
+
+    .menu-toggle:active {
+        transform: translateY(-50%) scale(0.9);
+    }
+
+    .menu-toggle[aria-expanded="true"] {
+        border-color: var(--accent);
+        background: rgba(201, 162, 94, 0.08);
+    }
+
+    /* Полоски превращаются в крестик, средняя тает к центру */
+    .menu-toggle span {
+        transition: transform 0.45s var(--ease), opacity 0.3s var(--ease), background 0.35s var(--ease);
+    }
+
+    .menu-toggle[aria-expanded="true"] span {
+        background: var(--accent);
+    }
+
+    .menu-toggle[aria-expanded="true"] span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+    }
+
+    /* ----- Мобильное меню: выпадающая шторка под шапкой ----- */
+
+    .nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        order: 0;
+        width: auto;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        padding: 14px 0 22px;
+        background: var(--bg);
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.45);
+        visibility: hidden;
+        clip-path: inset(0 0 100% 0);
+        transition: clip-path 0.4s var(--ease), visibility 0s linear 0.4s;
+    }
+
+    .nav.open {
+        visibility: visible;
+        clip-path: inset(0 0 -40px 0);
+        transition: clip-path 0.55s var(--ease), visibility 0s;
+    }
+
+    /* Золотая линия по нижнему краю шторки */
+    .nav::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: linear-gradient(to right, transparent, var(--accent), transparent);
+        transform: scaleX(0);
+        transition: transform 0.3s var(--ease);
+    }
+
+    .nav.open::before {
+        transform: scaleX(1);
+        transition: transform 0.8s var(--ease) 0.25s;
+    }
+
+    /* Все пункты одного размера и с одинаковыми промежутками */
+    .nav > a {
+        font-size: 1.1rem;
+        line-height: 1.3;
+        padding: 11px 24px;
+        color: var(--muted);
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), color 0.3s var(--ease);
+    }
+
+    /* Подчёркивание не нужно — текущую страницу выделяет цвет */
+    .nav > a::after {
+        display: none;
+    }
+
+    .nav > a.active {
+        color: var(--accent);
+        font-weight: 600;
+    }
+
+    .nav > a:active {
+        color: var(--heading);
+    }
+
+    /* Пункты появляются по очереди */
+    .nav.open > a {
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), color 0.3s var(--ease);
+    }
+
+    .nav.open > a:nth-child(1) { transition-delay: 0.08s; }
+    .nav.open > a:nth-child(2) { transition-delay: 0.14s; }
+    .nav.open > a:nth-child(3) { transition-delay: 0.2s; }
+    .nav.open > a:nth-child(4) { transition-delay: 0.26s; }
+
+    /* Затемнение страницы под шторкой */
+    .menu-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 9;
+        background: rgba(8, 6, 5, 0.6);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s var(--ease), visibility 0s linear 0.4s;
+    }
+
+    .menu-open .menu-backdrop {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.45s var(--ease), visibility 0s;
+    }
+
+    .menu-open .call-fab.show {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px) scale(0.8);
+    }
+
+    /* На телефоне наведения нет — убираем лупу и подъём */
+    .works-grid a::after,
+    .gallery-item::after {
+        display: none;
+    }
+}
+
+/* Для тех, у кого в системе включено «уменьшение движения» */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .js .reveal {
+        opacity: 1;
+        transform: none;
+    }
+
+    .js .section h2.reveal::after {
+        transform: none;
+    }
+
+    .lightbox-img {
+        opacity: 1;
+        transform: none;
+    }
+}
