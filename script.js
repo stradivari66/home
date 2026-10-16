@@ -126,20 +126,47 @@ if (lightbox) {
     const counter = lightbox.querySelector('.lightbox-counter');
     let current = 0;
 
-    // Новое фото проявляется плавно, когда загрузится
-    img.addEventListener('load', () => img.classList.add('loaded'));
+    const placeholder = lightbox.querySelector('.lightbox-placeholder');
+    let pendingAlt = '';
+
+    // Настоящее фото загрузилось — плавно проявляем его поверх размытой копии.
+    // Описание (alt) ставим только теперь, иначе браузер на миг покажет его текстом
+    img.addEventListener('load', () => {
+        img.alt = pendingAlt;
+        img.classList.add('loaded');
+    });
+
+    // На весь экран показываем большое фото: на телефоне хватает 1080 px,
+    // на компьютере браузер возьмёт оригинал 1920 px
+    img.sizes = '(max-width: 900px) 100vw, 75vh';
 
     function show(index) {
         current = (index + items.length) % items.length;
-        const thumb = items[current].querySelector('img');
+        const item = items[current];
+        const thumb = item.querySelector('img');
+        const full = item.dataset.full;
+
+        // Размытая крошечная копия видна сразу — она уже встроена в страницу
+        placeholder.src = item.dataset.placeholder;
+
+        // Прежнее фото убираем мгновенно, без затухания
+        img.style.transition = 'none';
         img.classList.remove('loaded');
-        if (img.getAttribute('src') === thumb.getAttribute('src')) {
+        void img.offsetWidth;
+        img.style.transition = '';
+
+        pendingAlt = thumb.alt;
+        if (img.getAttribute('src') === full) {
             // То же фото — событие load не придёт, показываем сразу
-            requestAnimationFrame(() => img.classList.add('loaded'));
+            requestAnimationFrame(() => {
+                img.alt = pendingAlt;
+                img.classList.add('loaded');
+            });
         } else {
-            img.src = thumb.src;
+            img.alt = '';
+            img.srcset = item.dataset.medium + ' 1080w, ' + full + ' 1920w';
+            img.src = full;
         }
-        img.alt = thumb.alt;
         caption.textContent = thumb.alt;
         counter.textContent = (current + 1) + ' / ' + items.length;
     }
@@ -179,6 +206,15 @@ if (lightbox) {
         touchStartX = null;
     });
 
-    // Возвращаем фокус на фото, с которого открыли
-    lightbox.addEventListener('close', () => items[current].focus());
+    lightbox.addEventListener('close', () => {
+        // Очищаем просмотр, чтобы при следующем открытии
+        // не мелькнуло предыдущее фото
+        img.classList.remove('loaded');
+        img.removeAttribute('srcset');
+        img.removeAttribute('src');
+        img.alt = '';
+        placeholder.removeAttribute('src');
+        // Возвращаем фокус на фото, с которого открыли
+        items[current].focus();
+    });
 }

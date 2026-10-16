@@ -25,12 +25,14 @@
     <meta property="og:title" content="Stradivari - Мастерская музыкальных инструментов">
     <meta property="og:description" content="Ремонт, реставрация и настройка струнных инструментов. Бесплатная консультация.">
     <meta property="og:url" content="https://stradivari66.github.io/home/">
-    <meta property="og:image" content="https://stradivari66.github.io/home/images/photo7.webp">
+    <meta property="og:image" content="https://stradivari66.github.io/home/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Шрифты с самого сайта; кириллицу подгружаем заранее, она нужна на каждой странице -->
+    <link rel="preload" href="fonts/playfair-display-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/inter-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="style.css">
 
     <!-- Сведения о мастерской для поисковиков -->
@@ -41,7 +43,7 @@
         "name": "Stradivari",
         "description": "Мастерская по ремонту и реставрации музыкальных инструментов",
         "url": "https://stradivari66.github.io/home/",
-        "image": "https://stradivari66.github.io/home/images/photo7.webp",
+        "image": "https://stradivari66.github.io/home/images/og-image.jpg",
         "telephone": "+7 912 031-90-10",
         "email": "vic.gusak@yandex.ru",
         "sameAs": ["https://vk.com/stradivarigus17"]
@@ -80,7 +82,7 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="images/photo7.webp" alt="Скрипка до и после реставрации" width="1920" height="1920">
+                    <img src="images/medium/photo7.webp" srcset="images/thumbs/photo7.webp 640w, images/medium/photo7.webp 1080w, images/photo7.webp 1920w" sizes="(max-width: 900px) calc(100vw - 32px), 470px" alt="Скрипка до и после реставрации" width="1920" height="1920" fetchpriority="high">
                 </div>
             </div>
         </section>
@@ -105,10 +107,10 @@
                 <h2>Работы мастерской</h2>
                 <p class="section-lead">До и после ремонта</p>
                 <div class="works-grid">
-                    <a href="gallery.html"><img src="images/photo1.webp" alt="Классическая гитара: замена подставки — до и после" width="1920" height="1920" loading="lazy"></a>
-                    <a href="gallery.html"><img src="images/photo4.webp" alt="Смычок: восстановление сломанной головки — до и после" width="1920" height="1920" loading="lazy"></a>
-                    <a href="gallery.html"><img src="images/photo3.webp" alt="Гитара: реставрация лакового покрытия корпуса — до и после" width="1920" height="1920" loading="lazy"></a>
-                    <a href="gallery.html"><img src="images/photo2.webp" alt="Электрогитара: восстановление лака возле бриджа — до и после" width="1920" height="1920" loading="lazy"></a>
+                    <a href="gallery.html"><img src="images/thumbs/photo1.webp" srcset="images/thumbs/photo1.webp 640w, images/medium/photo1.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Классическая гитара: замена подставки — до и после" width="1920" height="1920" loading="lazy"></a>
+                    <a href="gallery.html"><img src="images/thumbs/photo4.webp" srcset="images/thumbs/photo4.webp 640w, images/medium/photo4.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Смычок: восстановление сломанной головки — до и после" width="1920" height="1920" loading="lazy"></a>
+                    <a href="gallery.html"><img src="images/thumbs/photo3.webp" srcset="images/thumbs/photo3.webp 640w, images/medium/photo3.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Гитара: реставрация лакового покрытия корпуса — до и после" width="1920" height="1920" loading="lazy"></a>
+                    <a href="gallery.html"><img src="images/thumbs/photo2.webp" srcset="images/thumbs/photo2.webp 640w, images/medium/photo2.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Электрогитара: восстановление лака возле бриджа — до и после" width="1920" height="1920" loading="lazy"></a>
                 </div>
                 <a class="more" href="gallery.html">Вся галерея →</a>
             </div>
