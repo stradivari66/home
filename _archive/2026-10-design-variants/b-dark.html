@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вариант Б — Строгий тёмный · Stradivari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #14110f; --hero-bg: #1a1613; --alt-bg: #1a1613; --card-bg: #1f1a16; --header-bg: rgba(20, 17, 15, .96); --footer-bg: #0f0d0b;
+  --text: #ddd3c4; --heading: #f2ebdf; --muted: #a39581;
+  --accent: #c9a25e; --accent-hover: #d9b574; --on-accent: #17120d;
+  --line: #2c2620; --line-strong: #4a3f33;
+  --font-body: 'Inter', system-ui, sans-serif; --font-heading: 'Playfair Display', Georgia, serif; --font-logo: 'Playfair Display', Georgia, serif;
+  --heading-weight: 600; --radius: 4px; --shadow: 0 20px 50px rgba(0, 0, 0, .5);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 17px; line-height: 1.65; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+.wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+.site-header { background: var(--header-bg); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+.header-inner { display: flex; align-items: center; gap: 32px; min-height: 76px; }
+.logo { font-family: var(--font-logo); font-weight: 700; font-size: 1.45rem; letter-spacing: .14em; color: var(--heading); line-height: 1.1; }
+.logo span { display: block; font-family: var(--font-body); font-weight: 400; font-size: .68rem; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+.nav { display: flex; gap: 28px; margin-left: auto; font-size: .95rem; }
+.nav a { color: var(--muted); padding: 6px 0; border-bottom: 2px solid transparent; }
+.nav a:hover { color: var(--heading); }
+.nav a.active { color: var(--heading); border-bottom-color: var(--accent); }
+.header-phone { font-weight: 600; color: var(--heading); white-space: nowrap; }
+
+.hero { padding: 80px 0; background: var(--hero-bg); border-bottom: 1px solid var(--line); }
+.hero-inner { display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
+.eyebrow { font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 18px; }
+h1, h2, h3 { font-family: var(--font-heading); color: var(--heading); font-weight: var(--heading-weight); line-height: 1.2; }
+h1 { font-size: clamp(2rem, 4vw, 3.1rem); margin-bottom: 22px; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 520px; margin-bottom: 34px; }
+.actions { display: flex; flex-wrap: wrap; gap: 14px; }
+.btn { display: inline-block; padding: 14px 28px; border-radius: var(--radius); font-weight: 600; font-size: .95rem; transition: background .2s, color .2s, border-color .2s; }
+.btn-primary { background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent); }
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn-secondary { border: 1px solid var(--line-strong); color: var(--heading); }
+.btn-secondary:hover { border-color: var(--accent); }
+.hero-image img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 75%; border-radius: var(--radius); box-shadow: var(--shadow); }
+
+.section { padding: 88px 0; border-bottom: 1px solid var(--line); }
+h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); margin-bottom: 8px; }
+.section-lead { color: var(--muted); margin-bottom: 40px; }
+.service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card { background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; }
+.card .num { display: block; font-family: var(--font-heading); color: var(--accent); font-size: .95rem; margin-bottom: 14px; letter-spacing: .1em; }
+.card h3 { font-size: 1.2rem; margin-bottom: 8px; }
+.card p { color: var(--muted); font-size: .97rem; }
+.card-accent { border-color: var(--accent); }
+
+.works { background: var(--alt-bg); }
+.works-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.works-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }
+.more { display: inline-block; margin-top: 28px; color: var(--accent); font-weight: 600; }
+
+.contacts-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.contact-list { display: grid; grid-template-columns: auto 1fr; gap: 14px 32px; font-size: 1.1rem; }
+.contact-list dt { color: var(--muted); font-size: .9rem; text-transform: uppercase; letter-spacing: .08em; padding-top: 3px; }
+.contact-list dd { color: var(--heading); }
+.contact-list a:hover { color: var(--accent); }
+
+.site-footer { padding: 28px 0; font-size: .85rem; color: var(--muted); background: var(--footer-bg); }
+
+@media (max-width: 900px) {
+  .header-inner { flex-wrap: wrap; gap: 10px 24px; padding: 14px 24px; }
+  .nav { order: 3; width: 100%; margin-left: 0; gap: 20px; overflow-x: auto; }
+  .header-phone { margin-left: auto; }
+  .hero { padding: 48px 0; }
+  .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+  .hero-image img { aspect-ratio: 4 / 3; }
+  .service-grid { grid-template-columns: repeat(2, 1fr); }
+  .works-grid { grid-template-columns: repeat(2, 1fr); }
+  .contacts-inner { grid-template-columns: 1fr; gap: 8px; }
+  .section { padding: 60px 0; }
+}
+@media (max-width: 560px) {
+  .wrap { padding: 0 16px; }
+  .header-inner { padding: 12px 16px; }
+  .header-phone { display: none; }
+  .service-grid { grid-template-columns: 1fr; }
+  .contact-list { grid-template-columns: 1fr; gap: 2px; }
+  .contact-list dd { margin-bottom: 12px; }
+}
+
+
+.mockup-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 50; background: #111; color: #fff; font: 500 13px/1 system-ui, sans-serif; padding: 10px 16px; border-radius: 99px; box-shadow: 0 6px 20px rgba(0,0,0,.3); white-space: nowrap; }
+.mockup-bar a { color: #f0c97a; margin-left: 10px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="#">STRADIVARI<span>мастерская музыкальных инструментов</span></a>
+    <nav class="nav">
+      <a href="#" class="active">Главная</a>
+      <a href="#">О мастере</a>
+      <a href="#works">Галерея</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <a class="header-phone" href="tel:+79120319010">+7 912 031-90-10</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <p class="eyebrow">Ремонт · Реставрация · Настройка</p>
+      <h1>Мастерская по ремонту и реставрации музыкальных инструментов</h1>
+      <p class="lead">У нас Вы сможете получить квалифицированную помощь и бесплатную консультацию.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="tel:+79120319010">Позвонить мастеру</a>
+        <a class="btn btn-secondary" href="#works">Посмотреть работы</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="images/photo7.webp" alt="Скрипка после реставрации">
+    </div>
+  </div>
+</section>
+
+<section class="section services">
+  <div class="wrap">
+    <h2>Услуги</h2>
+    <p class="section-lead">Профессиональный ремонт, реставрация и настройка</p>
+    <div class="service-grid">
+      <article class="card"><span class="num">01</span><h3>Гитары и народные инструменты</h3><p>Гитары, домры, балалайки, мандолины.</p></article>
+      <article class="card"><span class="num">02</span><h3>Смычковые инструменты</h3><p>Скрипки, альты, виолончели, смычки.</p></article>
+      <article class="card"><span class="num">03</span><h3>Национальные инструменты</h3><p>Струнно-смычковые и щипковые.</p></article>
+      <article class="card card-accent"><span class="num">04</span><h3>Замена волоса в смычках</h3><p>Для скрипок, альтов и виолончелей.</p></article>
+      <article class="card"><span class="num">05</span><h3>Замена ладов</h3><p>На любых инструментах.</p></article>
+      <article class="card"><span class="num">06</span><h3>Сложные столярные работы</h3><p>И решение нестандартных ремонтных задач.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section works" id="works">
+  <div class="wrap">
+    <h2>Работы мастерской</h2>
+    <p class="section-lead">До и после ремонта</p>
+    <div class="works-grid">
+      <img src="images/photo1.webp" alt="Классическая гитара: замена подставки — до и после">
+      <img src="images/photo4.webp" alt="Смычок: восстановление головки — до и после">
+      <img src="images/photo3.webp" alt="Гитара: реставрация лака — до и после">
+      <img src="images/photo2.webp" alt="Электрогитара: восстановление лака — до и после">
+    </div>
+    <a class="more" href="#">Вся галерея →</a>
+  </div>
+</section>
+
+<section class="section contacts" id="contacts">
+  <div class="wrap contacts-inner">
+    <div>
+      <h2>Контакты</h2>
+      <p class="section-lead">Позвоните или напишите — проконсультирую бесплатно.</p>
+    </div>
+    <dl class="contact-list">
+      <dt>Телефон</dt><dd><a href="tel:+79120319010">+7 912 031-90-10</a></dd>
+      <dt>Почта</dt><dd><a href="mailto:vic.gusak@yandex.ru">vic.gusak@yandex.ru</a></dd>
+      <dt>ВКонтакте</dt><dd><a href="https://vk.com/stradivarigus17" target="_blank" rel="noopener">vk.com/stradivarigus17</a></dd>
+      <dt>Мастер</dt><dd>Виктор</dd>
+    </dl>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">© Stradivari · Мастерская музыкальных инструментов</div>
+</footer>
+
+<div class="mockup-bar">Вариант Б — Строгий тёмный <a href="index.html">← все варианты</a></div>
+</body>
+</html>
