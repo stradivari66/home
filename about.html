@@ -32,7 +32,116 @@
     <!-- Шрифты с самого сайта; кириллицу подгружаем заранее, она нужна на каждой странице -->
     <link rel="preload" href="fonts/playfair-display-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/inter-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <style>
+        /* Стили шапки и первого экрана — прямо в странице, чтобы они появились сразу,
+           не дожидаясь style.css. Это копии правил из style.css: меняя там шапку
+           или первый экран, поменяйте и здесь (во всех трёх страницах) */
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('fonts/inter-cyrillic.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('fonts/inter-latin.woff2') format('woff2'); unicode-range: U+0020-007E, U+00A0-00BF, U+00D7, U+00F7, U+2010-2027, U+2030-203A, U+20AC, U+2122, U+2190-2193, U+2212; }
+        @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 500 700; font-display: swap; src: url('fonts/playfair-display-cyrillic.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+        @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 500 700; font-display: swap; src: url('fonts/playfair-display-latin.woff2') format('woff2'); unicode-range: U+0020-007E, U+00A0-00BF, U+00D7, U+00F7, U+2010-2027, U+2030-203A, U+20AC, U+2122, U+2190-2193, U+2212; }
+        :root { --bg: #14110f; --alt-bg: #1a1613; --header-bg: rgba(20, 17, 15, 0.96); --text: #ddd3c4; --heading: #f2ebdf; --muted: #a39581; --accent: #c9a25e; --on-accent: #17120d; --line: #2c2620; --line-strong: #4a3f33; --font-body: 'Inter', system-ui, sans-serif; --font-heading: 'Playfair Display', Georgia, serif; --radius: 4px; --shadow: 0 20px 50px rgba(0, 0, 0, 0.5); --ease: cubic-bezier(0.22, 0.7, 0.2, 1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 17px; line-height: 1.65; min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex: 1; }
+        a { color: inherit; text-decoration: none; }
+        img { display: block; max-width: 100%; }
+        .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+        h1 { font-family: var(--font-heading); color: var(--heading); font-weight: 600; line-height: 1.2; font-size: clamp(2rem, 4vw, 3.1rem); margin-bottom: 22px; }
+        .site-header { background: var(--header-bg); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+        .header-inner { display: flex; align-items: center; gap: 32px; min-height: 76px; }
+        .logo { font-family: var(--font-heading); font-weight: 700; font-size: 1.45rem; letter-spacing: 0.14em; color: var(--heading); line-height: 1.1; }
+        .logo span { display: block; font-family: var(--font-body); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+        .nav { display: flex; gap: 28px; margin-left: auto; font-size: 0.95rem; }
+        .nav > a { position: relative; color: var(--muted); padding: 6px 0; white-space: nowrap; }
+        .nav > a.active { color: var(--heading); }
+        .nav > a.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--accent); }
+        .header-phone { font-weight: 600; color: var(--heading); white-space: nowrap; }
+        .menu-toggle { display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; flex-direction: column; justify-content: center; align-items: center; gap: 5px; background: none; border: 1px solid var(--line-strong); border-radius: var(--radius); }
+        .menu-toggle span { width: 20px; height: 2px; background: var(--heading); }
+        .hero, .page-header { background: radial-gradient(ellipse 60% 70% at 85% 15%, rgba(201, 162, 94, 0.10), transparent 70%), radial-gradient(ellipse 50% 60% at 0% 100%, rgba(201, 162, 94, 0.05), transparent 70%), var(--alt-bg); border-bottom: 1px solid var(--line); }
+        .hero { padding: 80px 0; }
+        .hero-inner { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+        .eyebrow { font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 18px; }
+        .lead { font-size: 1.15rem; color: var(--muted); max-width: 520px; margin-bottom: 34px; }
+        .actions { display: flex; flex-wrap: wrap; gap: 14px; }
+        .btn { display: inline-block; position: relative; overflow: hidden; padding: 14px 28px; border-radius: var(--radius); font-weight: 600; font-size: 0.95rem; }
+        .btn-primary { background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent); }
+        .btn-secondary { border: 1px solid var(--line-strong); color: var(--heading); }
+        .page-header { padding: 64px 0 48px; }
+        .page-header h1 { margin-bottom: 8px; }
+        .page-header .lead { margin-bottom: 0; }
+        @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+        @keyframes settle { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
+        .hero-text > *, .page-header .wrap > * { animation: rise 0.9s var(--ease) both; }
+        .hero-text > :nth-child(2), .page-header .wrap > :nth-child(2) { animation-delay: 0.12s; }
+        .hero-text > :nth-child(3) { animation-delay: 0.24s; }
+        .hero-text > :nth-child(4) { animation-delay: 0.36s; }
+        .hero-image { position: relative; background: var(--alt-bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); animation: rise 1s var(--ease) 0.2s both; }
+        .hero-image::before { content: ''; position: absolute; inset: 0; background: var(--ph, none) center 75% / cover no-repeat; filter: blur(14px); transform: scale(1.15); }
+        .hero-image img { position: relative; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 75%; border-radius: var(--radius); animation: settle 1.6s var(--ease) 0.2s both; }
+        .img-fx .hero-image img:not(.ready) { opacity: 0; animation-play-state: paused; }
+        /* Остальная часть страницы появится, когда загрузится style.css */
+        main > :not(:first-child), .site-footer { visibility: hidden; }
+        .call-fab { display: none; }
+        /* Порядок появления: шапка, затем (когда загрузятся шрифты) текст, затем всё остальное */
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        .logo, .nav, .header-phone { animation: fade-in 0.6s var(--ease) both; }
+        .fonts-wait .logo, .fonts-wait .nav, .fonts-wait .header-phone,
+        .fonts-wait .hero-text > *, .fonts-wait .page-header .wrap > *,
+        .fonts-wait .hero-image, .fonts-wait .hero-image img { animation-play-state: paused; }
+        .fonts-wait main > :not(:first-child), .fonts-wait .site-footer { visibility: hidden; }
+        @media (max-width: 900px) {
+            .header-inner { flex-wrap: wrap; gap: 10px 24px; padding: 14px 24px; }
+            .nav { order: 3; width: 100%; margin-left: 0; gap: 20px; overflow-x: auto; }
+            .header-phone { margin-left: auto; }
+            .hero { padding: 48px 0; }
+            .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+            .hero-image img { aspect-ratio: 4 / 3; }
+            .page-header { padding: 44px 0 36px; }
+        }
+        @media (max-width: 640px) {
+            body { font-size: 16px; }
+            .wrap { padding: 0 16px; }
+            .header-inner { position: relative; justify-content: center; min-height: 60px; padding: 10px 64px; }
+            .logo { font-size: 1.25rem; text-align: center; }
+            .logo span, .header-phone, .eyebrow, .gallery-hint { display: none; }
+            .menu-toggle { display: flex; }
+            .nav { position: absolute; visibility: hidden; }
+            .hero-text, .page-header { text-align: center; }
+            .hero { padding: 36px 0 40px; }
+            .hero-inner { gap: 28px; }
+            h1 { font-size: 1.85rem; margin-bottom: 14px; }
+            .lead { font-size: 1.05rem; margin: 0 auto 26px; }
+            .actions { flex-direction: column; gap: 10px; }
+            .btn { display: block; width: 100%; text-align: center; padding: 15px 20px; }
+            .hero-image img { aspect-ratio: 1; object-position: center; }
+            .page-header { padding: 32px 0 28px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; }
+        }
+    </style>
+    <script>
+      // Текст показываем, когда загрузятся шрифты, — без подмены шрифта на глазах.
+      // На совсем медленном интернете ждём не дольше 8 секунд
+      (function () {
+        if (!document.fonts || !document.fonts.load) return;
+        var root = document.documentElement;
+        var done = function () { root.classList.remove('fonts-wait'); };
+        root.classList.add('fonts-wait');
+        Promise.all([
+          document.fonts.load('600 1em "Playfair Display"', 'Мастерская STRADIVARI'),
+          document.fonts.load('1em Inter', 'Мастерская +7 912')
+        ]).then(done, done);
+        setTimeout(done, 8000);
+      })();
+    </script>
+    <!-- Остальные стили грузятся следом и не задерживают показ шапки -->
+    <link rel="preload" href="style.css" as="style" onload="this.onload=null; this.rel='stylesheet'; document.documentElement.classList.add('css-ready')">
+    <noscript><link rel="stylesheet" href="style.css"></noscript>
 </head>
 <body>
     <header class="site-header">

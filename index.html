@@ -12,6 +12,38 @@
       gtag('config', 'G-6P1BGJ8JFZ');
     </script>
 
+    <script>
+      // Фото показываем только целиком: пока оно грузится, видна размытая копия.
+      // Фото проявляются строго по порядку на странице, одно за другим
+      document.documentElement.classList.add('img-fx');
+      (function () {
+        var queue = { fxNext: 0 }, root = document.documentElement;
+        function reveal() {
+          // Пока страница не показана (ждём стили и шрифты), фото не проявляем — иначе анимацию никто не увидит
+          if (!root.classList.contains('css-ready') || root.classList.contains('fonts-wait')) return;
+          var imgs = document.querySelectorAll('.hero-image img, .works-grid img, .gallery-grid img');
+          for (var k = 0; k < imgs.length; k++) {
+            var img = imgs[k];
+            if (img.fxShown) continue;
+            if (!img.fxReady) return; // ждём, пока загрузится предыдущее
+            img.fxShown = true;
+            var now = Date.now(), at = Math.max(now, queue.fxNext);
+            queue.fxNext = at + 180;
+            setTimeout(function (el) { el.classList.add('ready'); }, at - now, img);
+          }
+        }
+        function ready(e) {
+          var img = e.target;
+          if (img.tagName !== 'IMG' || !img.closest('.hero-image, .works-grid, .gallery-grid')) return;
+          var done = function () { img.fxReady = true; reveal(); };
+          if (img.decode) img.decode().then(done, done); else done();
+        }
+        document.addEventListener('load', ready, true);
+        document.addEventListener('error', ready, true);
+        new MutationObserver(reveal).observe(root, { attributes: true, attributeFilter: ['class'] });
+      })();
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stradivari - Мастерская музыкальных инструментов</title>
@@ -33,7 +65,116 @@
     <!-- Шрифты с самого сайта; кириллицу подгружаем заранее, она нужна на каждой странице -->
     <link rel="preload" href="fonts/playfair-display-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/inter-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <style>
+        /* Стили шапки и первого экрана — прямо в странице, чтобы они появились сразу,
+           не дожидаясь style.css. Это копии правил из style.css: меняя там шапку
+           или первый экран, поменяйте и здесь (во всех трёх страницах) */
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('fonts/inter-cyrillic.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('fonts/inter-latin.woff2') format('woff2'); unicode-range: U+0020-007E, U+00A0-00BF, U+00D7, U+00F7, U+2010-2027, U+2030-203A, U+20AC, U+2122, U+2190-2193, U+2212; }
+        @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 500 700; font-display: swap; src: url('fonts/playfair-display-cyrillic.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+        @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 500 700; font-display: swap; src: url('fonts/playfair-display-latin.woff2') format('woff2'); unicode-range: U+0020-007E, U+00A0-00BF, U+00D7, U+00F7, U+2010-2027, U+2030-203A, U+20AC, U+2122, U+2190-2193, U+2212; }
+        :root { --bg: #14110f; --alt-bg: #1a1613; --header-bg: rgba(20, 17, 15, 0.96); --text: #ddd3c4; --heading: #f2ebdf; --muted: #a39581; --accent: #c9a25e; --on-accent: #17120d; --line: #2c2620; --line-strong: #4a3f33; --font-body: 'Inter', system-ui, sans-serif; --font-heading: 'Playfair Display', Georgia, serif; --radius: 4px; --shadow: 0 20px 50px rgba(0, 0, 0, 0.5); --ease: cubic-bezier(0.22, 0.7, 0.2, 1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 17px; line-height: 1.65; min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex: 1; }
+        a { color: inherit; text-decoration: none; }
+        img { display: block; max-width: 100%; }
+        .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+        h1 { font-family: var(--font-heading); color: var(--heading); font-weight: 600; line-height: 1.2; font-size: clamp(2rem, 4vw, 3.1rem); margin-bottom: 22px; }
+        .site-header { background: var(--header-bg); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+        .header-inner { display: flex; align-items: center; gap: 32px; min-height: 76px; }
+        .logo { font-family: var(--font-heading); font-weight: 700; font-size: 1.45rem; letter-spacing: 0.14em; color: var(--heading); line-height: 1.1; }
+        .logo span { display: block; font-family: var(--font-body); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+        .nav { display: flex; gap: 28px; margin-left: auto; font-size: 0.95rem; }
+        .nav > a { position: relative; color: var(--muted); padding: 6px 0; white-space: nowrap; }
+        .nav > a.active { color: var(--heading); }
+        .nav > a.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--accent); }
+        .header-phone { font-weight: 600; color: var(--heading); white-space: nowrap; }
+        .menu-toggle { display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; flex-direction: column; justify-content: center; align-items: center; gap: 5px; background: none; border: 1px solid var(--line-strong); border-radius: var(--radius); }
+        .menu-toggle span { width: 20px; height: 2px; background: var(--heading); }
+        .hero, .page-header { background: radial-gradient(ellipse 60% 70% at 85% 15%, rgba(201, 162, 94, 0.10), transparent 70%), radial-gradient(ellipse 50% 60% at 0% 100%, rgba(201, 162, 94, 0.05), transparent 70%), var(--alt-bg); border-bottom: 1px solid var(--line); }
+        .hero { padding: 80px 0; }
+        .hero-inner { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+        .eyebrow { font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 18px; }
+        .lead { font-size: 1.15rem; color: var(--muted); max-width: 520px; margin-bottom: 34px; }
+        .actions { display: flex; flex-wrap: wrap; gap: 14px; }
+        .btn { display: inline-block; position: relative; overflow: hidden; padding: 14px 28px; border-radius: var(--radius); font-weight: 600; font-size: 0.95rem; }
+        .btn-primary { background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent); }
+        .btn-secondary { border: 1px solid var(--line-strong); color: var(--heading); }
+        .page-header { padding: 64px 0 48px; }
+        .page-header h1 { margin-bottom: 8px; }
+        .page-header .lead { margin-bottom: 0; }
+        @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+        @keyframes settle { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
+        .hero-text > *, .page-header .wrap > * { animation: rise 0.9s var(--ease) both; }
+        .hero-text > :nth-child(2), .page-header .wrap > :nth-child(2) { animation-delay: 0.12s; }
+        .hero-text > :nth-child(3) { animation-delay: 0.24s; }
+        .hero-text > :nth-child(4) { animation-delay: 0.36s; }
+        .hero-image { position: relative; background: var(--alt-bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); animation: rise 1s var(--ease) 0.2s both; }
+        .hero-image::before { content: ''; position: absolute; inset: 0; background: var(--ph, none) center 75% / cover no-repeat; filter: blur(14px); transform: scale(1.15); }
+        .hero-image img { position: relative; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 75%; border-radius: var(--radius); animation: settle 1.6s var(--ease) 0.2s both; }
+        .img-fx .hero-image img:not(.ready) { opacity: 0; animation-play-state: paused; }
+        /* Остальная часть страницы появится, когда загрузится style.css */
+        main > :not(:first-child), .site-footer { visibility: hidden; }
+        .call-fab { display: none; }
+        /* Порядок появления: шапка, затем (когда загрузятся шрифты) текст, затем всё остальное */
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        .logo, .nav, .header-phone { animation: fade-in 0.6s var(--ease) both; }
+        .fonts-wait .logo, .fonts-wait .nav, .fonts-wait .header-phone,
+        .fonts-wait .hero-text > *, .fonts-wait .page-header .wrap > *,
+        .fonts-wait .hero-image, .fonts-wait .hero-image img { animation-play-state: paused; }
+        .fonts-wait main > :not(:first-child), .fonts-wait .site-footer { visibility: hidden; }
+        @media (max-width: 900px) {
+            .header-inner { flex-wrap: wrap; gap: 10px 24px; padding: 14px 24px; }
+            .nav { order: 3; width: 100%; margin-left: 0; gap: 20px; overflow-x: auto; }
+            .header-phone { margin-left: auto; }
+            .hero { padding: 48px 0; }
+            .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+            .hero-image img { aspect-ratio: 4 / 3; }
+            .page-header { padding: 44px 0 36px; }
+        }
+        @media (max-width: 640px) {
+            body { font-size: 16px; }
+            .wrap { padding: 0 16px; }
+            .header-inner { position: relative; justify-content: center; min-height: 60px; padding: 10px 64px; }
+            .logo { font-size: 1.25rem; text-align: center; }
+            .logo span, .header-phone, .eyebrow, .gallery-hint { display: none; }
+            .menu-toggle { display: flex; }
+            .nav { position: absolute; visibility: hidden; }
+            .hero-text, .page-header { text-align: center; }
+            .hero { padding: 36px 0 40px; }
+            .hero-inner { gap: 28px; }
+            h1 { font-size: 1.85rem; margin-bottom: 14px; }
+            .lead { font-size: 1.05rem; margin: 0 auto 26px; }
+            .actions { flex-direction: column; gap: 10px; }
+            .btn { display: block; width: 100%; text-align: center; padding: 15px 20px; }
+            .hero-image img { aspect-ratio: 1; object-position: center; }
+            .page-header { padding: 32px 0 28px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; }
+        }
+    </style>
+    <script>
+      // Текст показываем, когда загрузятся шрифты, — без подмены шрифта на глазах.
+      // На совсем медленном интернете ждём не дольше 8 секунд
+      (function () {
+        if (!document.fonts || !document.fonts.load) return;
+        var root = document.documentElement;
+        var done = function () { root.classList.remove('fonts-wait'); };
+        root.classList.add('fonts-wait');
+        Promise.all([
+          document.fonts.load('600 1em "Playfair Display"', 'Мастерская STRADIVARI'),
+          document.fonts.load('1em Inter', 'Мастерская +7 912')
+        ]).then(done, done);
+        setTimeout(done, 8000);
+      })();
+    </script>
+    <!-- Остальные стили грузятся следом и не задерживают показ шапки -->
+    <link rel="preload" href="style.css" as="style" onload="this.onload=null; this.rel='stylesheet'; document.documentElement.classList.add('css-ready')">
+    <noscript><link rel="stylesheet" href="style.css"></noscript>
 
     <!-- Сведения о мастерской для поисковиков -->
     <script type="application/ld+json">
@@ -81,8 +222,8 @@
                         <a class="btn btn-secondary" href="gallery.html">Посмотреть работы</a>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <img src="images/medium/photo7.webp" srcset="images/thumbs/photo7.webp 640w, images/medium/photo7.webp 1080w, images/photo7.webp 1920w" sizes="(max-width: 900px) calc(100vw - 32px), 470px" alt="Скрипка до и после реставрации" width="1920" height="1920" fetchpriority="high">
+                <div class="hero-image" style="--ph: url(data:image/webp;base64,UklGRqABAABXRUJQVlA4IJQBAACwCACdASogACAAPrVOnkunJCKhqA1Q4BaJbACdMoR6bxm58Go22d2QSgHSCfRnSLjtWK3jQnT/S8sReUzYAzDX2rv0JvM3Iuq8qY7L2AAA/vzOYk6UYRH4jppq5l6w2N6e7NMBHN8yjgx98sZeA7m4prpDyFtuJCMdgj9JmY6oVcViUbdnGm2/1k1QIOqJ8paX6D7/qe+Qrrh1BaSlN76lmHBvNxYhkOHXEUJnWpnKUzQxJplpnXGBo6+XLP3YtMdxd5csuh4yhYZTd3ziOGvVW56CL57bG89Zzy3CDz7lLZmyQYh/RHjgjSHYEN7k7FEVkjLyIzytEqDAcQY5sdeD52yv2y2XeoU1h4igb9xKxivxj9FosirTFvkWNJMLwT1pW5Xvu9HU3cyoT3q6u10PMuPP+GEJYlpyI9pjD/VoyPEmz/Pf63THRGf0mLJeqqKUYw/wrHjg1IhzfPncBhucVYmm9CDQkOiFklwKhXeqgH4UgTc2BurIpZJ/m0sOnqkbs1ZZjZIzEQYAb4DG8oa3IA/QAA==)">
+                    <img src="images/medium/photo7.webp" srcset="images/thumbs/photo7.webp 640w, images/medium/photo7.webp 1080w, images/photo7.webp 1920w" sizes="(max-width: 900px) calc(100vw - 32px), 470px" alt="Скрипка до и после реставрации" width="1920" height="1920" fetchpriority="low">
                 </div>
             </div>
         </section>
@@ -107,10 +248,10 @@
                 <h2>Работы мастерской</h2>
                 <p class="section-lead">До и после ремонта</p>
                 <div class="works-grid">
-                    <a href="gallery.html"><img src="images/thumbs/photo1.webp" srcset="images/thumbs/photo1.webp 640w, images/medium/photo1.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Классическая гитара: замена подставки — до и после" width="1920" height="1920" loading="lazy"></a>
-                    <a href="gallery.html"><img src="images/thumbs/photo4.webp" srcset="images/thumbs/photo4.webp 640w, images/medium/photo4.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Смычок: восстановление сломанной головки — до и после" width="1920" height="1920" loading="lazy"></a>
-                    <a href="gallery.html"><img src="images/thumbs/photo3.webp" srcset="images/thumbs/photo3.webp 640w, images/medium/photo3.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Гитара: реставрация лакового покрытия корпуса — до и после" width="1920" height="1920" loading="lazy"></a>
-                    <a href="gallery.html"><img src="images/thumbs/photo2.webp" srcset="images/thumbs/photo2.webp 640w, images/medium/photo2.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Электрогитара: восстановление лака возле бриджа — до и после" width="1920" height="1920" loading="lazy"></a>
+                    <a href="gallery.html" style="--ph: url(data:image/webp;base64,UklGRlgBAABXRUJQVlA4IEwBAADQBwCdASogACAAPrVQoUwnJKMiKAqo4BaJbACdMoR5joIp3z6LjBE0khSrQFf/o4no7hKGYZ8q2H+wXv1vFbYP6mGgCKfihgD+hBhb/QsVopxP3lRZ87Nx1yKMrU+yFpZR7ZqLtMnX64T2eq/Js9+yDBEUYISWCTFnuXqlM6QmyO0nXHQLRVOFkmtdqkCtbmBdwnYo/fhMqXeSwfzvk38RF54NrcQIzBSFsyUsMGyDbgGS7WBrW8kvZpNRk/24Cd3FPqomf7tfl02EgXYeVSG9AhEXgJKkrNwTjO/SbvTgm9LA+/ZxewZDt13YFvZfTkzeLoCdsy4zVUY8IkmDLQqNlBpVCJPDMfyT7WPAI5y1kSQrPVSh76PRX4MHRrWOl9d3gLglgjnSZRO05//i1wThTfKor+H4wfVlwDuc2tmA/vX9RVBbXZjsSBEcAA==)"><img src="images/thumbs/photo1.webp" srcset="images/thumbs/photo1.webp 640w, images/medium/photo1.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Классическая гитара: замена подставки — до и после" width="1920" height="1920" loading="lazy"></a>
+                    <a href="gallery.html" style="--ph: url(data:image/webp;base64,UklGRgQBAABXRUJQVlA4IPgAAADQBgCdASogACAAPrVMn0snJCKhqA1Q4BaJQBTjdQVhQMArJDlAZM9zgkMfo+rh2+27AYEpZ1v4rirrGC+qDQAA/u2cyF1EzMpqnCkJuplGAltLqbKKlcn1AtUmq1a5IkhIdG4Ed5BIk1Bj7GuACVhIZtZbV2t9epcy7k+yHG7KnPVCvm0LzrKVjjl88bNnxR6F0pJPzymxgTXpkxRSUvDKspBJnK7og+CALAer+BQ5+3v1e+iqAHadx6YiCnCSOZn/GFSr7VsgBPdFfAh6uwXwtTYnnTRar4gOdgoLA7fODThjZ0GAuJE/3kpwjNhhpzyMNMLNNQAAAA==)"><img src="images/thumbs/photo4.webp" srcset="images/thumbs/photo4.webp 640w, images/medium/photo4.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Смычок: восстановление сломанной головки — до и после" width="1920" height="1920" loading="lazy"></a>
+                    <a href="gallery.html" style="--ph: url(data:image/webp;base64,UklGRoIBAABXRUJQVlA4IHYBAADwBwCdASogACAAPrVKnkonJCKhsAgA4BaJaACdMzQ11+g5NZK5QDpM7Rhviw7h45UozUP6FIIcXmcpJv13Yy6OXN+oiR3A5AAA/spt37ayY0yL9djgKRL6UFu0095b5QY1y2MoesTlMZG7JM09rzhJI0cjLpRlDuoIJrQhgfWXzG8m3Nd9XanDrRhX+TZOk6VSPDrpHxHSvSl3MWADObho9bFtQiWRSWNGRvBfOfdDr+ugnge/h74jrfWpKZ8HXph8HPhmNTNkhhu8VTUVSsHzAXK9CKep/t771zHQ7PRcwfj5h5bShUIH6vdv4cgZXkuoWB0ZjyKRSZh8n9zgLGFnLS3U4TBt6njoS61JHjcgqH2Wb2qZ0QgAwr8KVl0l9Vai/7mnsTCW626TTRJ6duyegryS/tB6FN3P6Mk9D97wYpc736bqYDVcpCoG5PIF94L7j7bJ+95QqUPJqTAWZ+gNnKUxEgks7ZuvFEeUp8oXn4YJlargAA==)"><img src="images/thumbs/photo3.webp" srcset="images/thumbs/photo3.webp 640w, images/medium/photo3.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Гитара: реставрация лакового покрытия корпуса — до и после" width="1920" height="1920" loading="lazy"></a>
+                    <a href="gallery.html" style="--ph: url(data:image/webp;base64,UklGRnIBAABXRUJQVlA4IGYBAABwBwCdASogACAAPrVInkmnJCKhMAgA4BaJbACdMoPKDcN6kGp25N2wbzeRGIpf9EGKrUqJrbOYK0VmFkhsKjrHa2MIAADLTW9omUUTVgdcI34toSXYaWil8W1WthNpfVrVwY7BUze3HFigYGTOtAu9qXrRlitgU5WW9Hq32xuyJ0NVUzo+Ib+r1O5hGkdWh7dh4R6+IVdoI9AcfrSq/8Fr7nMfr8M+v0yGHWrevf2S109quXiPVRoPR9K6er960zY8txD2LT69lUbQjH/hij/1J9gR281I1NfdlALfhppGo+/MXAIHZ2rMWaT2xGaH7oZuh9PKzeQ8hMCwO7ecUsdb3G/hgu7g0rj2DrFOT1jNIygFP7K9Oydtm3ClEi/7x8vhGWBfgoie5VFcpPxQ6XrD3sVyUbVB/rrTiFEe+MaiWUB19Ut3hbf2zdet47nxGZep+Gzpw7GG2VTZeqP+7LNZoLBFBzgA)"><img src="images/thumbs/photo2.webp" srcset="images/thumbs/photo2.webp 640w, images/medium/photo2.webp 1080w" sizes="(max-width: 900px) 50vw, 270px" alt="Электрогитара: восстановление лака возле бриджа — до и после" width="1920" height="1920" loading="lazy"></a>
                 </div>
                 <a class="more" href="gallery.html">Вся галерея →</a>
             </div>

@@ -1,7 +1,9 @@
 /* Общие стили сайта Stradivari — «Строгий тёмный» */
 
 /* Шрифты лежат на сайте, а не на серверах Google: страница не зависит от их доступности.
-   Playfair Display и Inter — свободная лицензия SIL Open Font License, тексты в fonts/. */
+   Playfair Display и Inter — свободная лицензия SIL Open Font License, тексты в fonts/.
+   Файлы урезаны до символов, которые нужны сайту (кириллица, базовая латиница,
+   знаки препинания, стрелки), — так они грузятся быстрее. */
 
 @font-face {
     font-family: 'Inter';
@@ -18,7 +20,7 @@
     font-weight: 400 600;
     font-display: swap;
     src: url('fonts/inter-latin.woff2') format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    unicode-range: U+0020-007E, U+00A0-00BF, U+00D7, U+00F7, U+2010-2027, U+2030-203A, U+20AC, U+2122, U+2190-2193, U+2212;
 }
 
 @font-face {
@@ -36,9 +38,16 @@
     font-weight: 500 700;
     font-display: swap;
     src: url('fonts/playfair-display-latin.woff2') format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    unicode-range: U+0020-007E, U+00A0-00BF, U+00D7, U+00F7, U+2010-2027, U+2030-203A, U+20AC, U+2122, U+2190-2193, U+2212;
 }
 
+
+/* Стили загрузились — показываем остальную страницу
+   (до этого видны только шапка и первый экран, см. <style> в начале страниц) */
+main > :not(:first-child),
+.site-footer {
+    visibility: visible;
+}
 
 :root {
     --bg: #14110f;
@@ -572,25 +581,31 @@ h2 {
 }
 
 /* Рамка под фото: размер известен сразу, поэтому подпись не прыгает.
-   Фото в галерее квадратные, рамка тоже квадратная и вписывается в экран */
+   Форма рамки — как у фото (--ratio = ширина / высота, ставит скрипт).
+   --reserve — место по высоте под отступы, подпись и счётчик */
 .lightbox-frame {
+    --ratio: 1;
+    --reserve: 190px;
     position: relative;
-    width: min(100%, calc(100vh - 170px));
-    width: min(100%, calc(100dvh - 170px));
-    aspect-ratio: 1;
+    flex-shrink: 0; /* не даём рамке сплющиться, иначе фото станет уже размытой копии */
+    width: min(100%, calc((100vh - var(--reserve)) * var(--ratio)));
+    width: min(100%, calc((100dvh - var(--reserve)) * var(--ratio)));
+    aspect-ratio: var(--ratio);
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: var(--shadow);
     background: var(--alt-bg);
 }
 
+/* Оба слоя заполняют рамку одинаково — по бокам не остаётся полос «мыла»,
+   даже если рамка разойдётся с фото на пару пикселей */
 .lightbox-placeholder,
 .lightbox-img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 /* Крошечная копия, растянутая и размытая — видна, пока грузится настоящее фото */
@@ -739,9 +754,9 @@ h2 {
         padding: 80px 16px 90px;
     }
 
+    /* Отступы больше, а подпись может переноситься на две строки */
     .lightbox-frame {
-        width: min(100%, calc(100vh - 220px));
-        width: min(100%, calc(100dvh - 220px));
+        --reserve: 290px;
     }
 
     .lightbox-prev,
@@ -1143,6 +1158,67 @@ h2 {
     transition: transform 0.9s ease-in-out;
 }
 
+/* Плавное проявление из размытия — только когда фото готово, а не в момент прихода стилей */
+.works-grid img.ready,
+.gallery-item img.ready {
+    transition: transform 0.9s ease-in-out, opacity 0.9s var(--ease), filter 1.2s var(--ease);
+}
+
+/* Пока фото грузится, на его месте размытая копия (--ph задана в разметке).
+   Само фото проявляется только целиком, а не полосами сверху вниз */
+.hero-image,
+.works-grid a,
+.gallery-item {
+    position: relative;
+    background: var(--alt-bg);
+}
+
+.hero-image::before,
+.works-grid a::before,
+.gallery-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--ph, none) center / cover no-repeat;
+    filter: blur(14px);
+    transform: scale(1.15);
+}
+
+.hero-image::before {
+    background-position: center 75%;
+}
+
+.hero-image img,
+.works-grid img,
+.gallery-item img {
+    position: relative;
+}
+
+.img-fx .hero-image img:not(.ready) {
+    opacity: 0;
+}
+
+.img-fx .works-grid img:not(.ready),
+.img-fx .gallery-item img:not(.ready) {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.05);
+}
+
+/* В галерее фото «опускаются» на место сверху вниз */
+.img-fx .gallery-item img:not(.ready) {
+    transform: translateY(-40px) scale(1.04);
+}
+
+.js .gallery-item.reveal:not(.visible) {
+    transform: translateY(-30px);
+}
+
+/* Главное фото «оседает» на место, только когда загрузилось */
+.img-fx .hero-image img:not(.ready) {
+    animation-play-state: paused;
+}
+
 .works-grid a:hover img,
 .gallery-item:hover img {
     transform: scale(1.06);
@@ -1174,19 +1250,19 @@ h2 {
     animation: lightbox-in 0.35s var(--ease);
 }
 
-/* Переход «из мыла в резкость»: настоящее фото проявляется поверх
-   размытой копии, одновременно наводя резкость и чуть приближаясь */
+/* Переход «из мыла в резкость»: чёткое фото медленно проступает сквозь
+   размытую копию и чуть «оседает». Размытие самого большого фото не анимируем:
+   браузер не успевает его пересчитывать, и переход идёт рывками */
 .lightbox-img {
     opacity: 0;
-    filter: blur(18px);
-    transform: scale(1.06);
-    transition: opacity 0.6s var(--ease), filter 0.9s var(--ease), transform 0.9s var(--ease);
+    transform: scale(1.04);
+    will-change: opacity, transform;
+    transition: opacity 1.3s var(--ease), transform 1.8s var(--ease);
 }
 
 /* Размытая копия держится ещё 0,6 с после загрузки, затем фото проявляется */
 .lightbox-img.loaded {
     opacity: 1;
-    filter: none;
     transform: none;
     transition-delay: 0.6s;
 }
@@ -1443,9 +1519,49 @@ h2 {
         transform: none;
     }
 
+    /* Без анимаций фото появляется сразу, но всё равно только целиком */
     .lightbox-img {
-        opacity: 1;
-        filter: none;
         transform: none;
+    }
+
+    .js .gallery-item.reveal:not(.visible) {
+        transform: none;
+    }
+}
+
+/* Просмотр фото на низком экране (телефон, повёрнутый боком):
+   отступы меньше, стрелки по бокам — иначе фото получается крошечным */
+@media (max-height: 500px) {
+    .lightbox-figure {
+        padding: 12px 72px;
+        gap: 0.5rem;
+    }
+
+    .lightbox-frame {
+        --reserve: 100px;
+    }
+
+    .lightbox-caption {
+        font-size: 0.95rem;
+    }
+
+    .lightbox-close {
+        top: 12px;
+        right: 12px;
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+    }
+
+    .lightbox-prev {
+        left: 12px;
+    }
+
+    .lightbox-next {
+        right: 12px;
     }
 }

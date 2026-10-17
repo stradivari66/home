@@ -1,5 +1,20 @@
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Страница показывается не сразу: сначала шапка, потом (когда загрузятся стили
+// и шрифты) всё остальное — см. начало страниц. Анимации появления запускаем
+// только после этого, иначе они отыграют незаметно
+function whenPageShown(fn) {
+    const root = document.documentElement;
+    const shown = () => root.classList.contains('css-ready') && !root.classList.contains('fonts-wait');
+    if (shown()) return fn();
+    const watcher = new MutationObserver(() => {
+        if (!shown()) return;
+        watcher.disconnect();
+        fn();
+    });
+    watcher.observe(root, { attributes: true, attributeFilter: ['class'] });
+}
+
 // ===== Появление блоков при прокрутке =====
 
 if ('IntersectionObserver' in window && !reduceMotion) {
@@ -29,7 +44,7 @@ if ('IntersectionObserver' in window && !reduceMotion) {
         });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-    targets.forEach((el) => observer.observe(el));
+    whenPageShown(() => targets.forEach((el) => observer.observe(el)));
 }
 
 // ===== Шапка при прокрутке и плавающая кнопка звонка =====
@@ -127,13 +142,21 @@ if (lightbox) {
     let current = 0;
 
     const placeholder = lightbox.querySelector('.lightbox-placeholder');
+    const frame = lightbox.querySelector('.lightbox-frame');
     let pendingAlt = '';
 
     // Настоящее фото загрузилось — плавно проявляем его поверх размытой копии.
     // Описание (alt) ставим только теперь, иначе браузер на миг покажет его текстом
+    // Ждём ещё и декодирования, иначе на слабом компьютере
+    // большое фото прорисуется полосами уже после исчезновения размытия
     img.addEventListener('load', () => {
-        img.alt = pendingAlt;
-        img.classList.add('loaded');
+        const src = img.currentSrc;
+        const reveal = () => {
+            if (img.currentSrc !== src) return; // пока ждали, уже листнули дальше
+            img.alt = pendingAlt;
+            img.classList.add('loaded');
+        };
+        img.decode().then(reveal, reveal);
     });
 
     // На весь экран показываем большое фото: на телефоне хватает 1080 px,
@@ -145,6 +168,12 @@ if (lightbox) {
         const item = items[current];
         const thumb = item.querySelector('img');
         const full = item.dataset.full;
+
+        // Рамка принимает форму фото (пропорции берём у миниатюры в сетке)
+        const ratio = thumb.naturalWidth && thumb.naturalHeight
+            ? thumb.naturalWidth / thumb.naturalHeight
+            : thumb.width / thumb.height || 1;
+        frame.style.setProperty('--ratio', ratio);
 
         // Размытая крошечная копия видна сразу — она уже встроена в страницу
         placeholder.src = item.dataset.placeholder;
